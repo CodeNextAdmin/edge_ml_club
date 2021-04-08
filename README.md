@@ -3,11 +3,9 @@
 This repository provides several Python modules that are required
 for the Edge ML Club projects, including starter script files for those projects.
 
-**TODO: Update the RPI image URL and git clone URL below with final version.**
-
 ## Get started
 
-1. [Download this Raspberry Pi image](https://drive.google.com/file/d/1QxMG5YdLhnJtENGiqO3gBtYRWH-cHcj6/view?usp=sharing&resourcekey=0-8uTVzxpS600tzY0jmTumOw)
+1. [Download this Raspberry Pi image](https://github.com/CodeNextAdmin/edge_ml_club/releases/download/20210310/codenext-2021-03-10-raspios-buster-armhf.img.zip)
     and flash it onto your SD card. If you're not familiar with flashing, follow these steps:
 
     1.  Plug in a microSD card to a desktop/laptop computer (you might need an SD card adapter).
@@ -33,13 +31,13 @@ for the Edge ML Club projects, including starter script files for those projects
     and running this command:
 
     ```
-    git clone https://coral.googlesource.com/codenext-raspimon
+    git clone https://github.com/CodeNextAdmin/edge_ml_club
     ```
 
 1.  Enter the directory and download some required files:
 
     ```
-    cd codenext-raspimon
+    cd edge_ml_club
 
     make download
     ```
