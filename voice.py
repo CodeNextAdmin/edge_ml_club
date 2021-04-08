@@ -250,5 +250,5 @@ class AudioClassifier:
     except queue.Empty:
       return None
 
-VOICE_MODEL = 'voice_commands_v0.7_edgetpu.tflite'
-VOICE_LABELS = 'labels_gc2.raw.txt'
+VOICE_MODEL = 'models/voice_commands_v0.7_edgetpu.tflite'
+VOICE_LABELS = 'models/labels_gc2.raw.txt'
