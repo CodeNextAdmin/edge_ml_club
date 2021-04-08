@@ -30,11 +30,11 @@ _EDGETPU_SHARED_LIB = {
   'Windows': 'edgetpu.dll'
 }[platform.system()]
 
-FACE_DETECTION_MODEL = 'ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite'
-OBJECT_DETECTION_MODEL = 'ssd_mobilenet_v2_coco_quant_postprocess_edgetpu.tflite'
-OBJECT_DETECTION_LABELS = 'coco_labels.txt'
-CLASSIFICATION_MODEL = 'tf2_mobilenet_v2_1.0_224_ptq_edgetpu.tflite'
-CLASSIFICATION_LABELS = 'imagenet_labels.txt'
+FACE_DETECTION_MODEL = 'models/ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite'
+OBJECT_DETECTION_MODEL = 'models/ssd_mobilenet_v2_coco_quant_postprocess_edgetpu.tflite'
+OBJECT_DETECTION_LABELS = 'models/coco_labels.txt'
+CLASSIFICATION_MODEL = 'models/tf2_mobilenet_v2_1.0_224_ptq_edgetpu.tflite'
+CLASSIFICATION_LABELS = 'models/imagenet_labels.txt'
 
 CORAL_COLOR = (86, 104, 237)
 

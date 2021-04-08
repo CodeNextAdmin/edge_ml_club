@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-TEST_DATA_URL=https://github.com/google-coral/edgetpu/raw/master/test_data
+TEST_DATA_URL=https://github.com/google-coral/test_data/raw/master
 VENV_NAME=.env
 
 .PHONY: venv deb download clean
@@ -14,35 +14,34 @@ deb:
 	sudo apt-get install -y python3-numpy python3-pyaudio python3-opencv
 
 coco_labels.txt:
-	wget "$(TEST_DATA_URL)/$@"
+	wget "$(TEST_DATA_URL)/$@" -P models/
 
 ssd_mobilenet_v2_coco_quant_postprocess_edgetpu.tflite:
-	wget "$(TEST_DATA_URL)/$@"
+	wget "$(TEST_DATA_URL)/$@" -P models/
 
 imagenet_labels.txt:
-	wget "$(TEST_DATA_URL)/$@"
+	wget "$(TEST_DATA_URL)/$@" -P models/
 
 ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite:
-	wget "$(TEST_DATA_URL)/$@"
+	wget "$(TEST_DATA_URL)/$@" -P models/
 
-mobilenet_v2_1.0_224_quant_edgetpu.tflite:
-	wget "$(TEST_DATA_URL)/$@"
+tf2_mobilenet_v2_1.0_224_ptq_edgetpu.tflite:
+	wget "$(TEST_DATA_URL)/$@" -P models/
 
 labels_gc2.raw.txt:
-	wget "https://github.com/google-coral/project-keyword-spotter/raw/master/config/$@"
+	wget "https://github.com/google-coral/project-keyword-spotter/raw/master/config/$@" -P models/
 
 voice_commands_v0.7_edgetpu.tflite:
-	wget "https://github.com/google-coral/project-keyword-spotter/raw/master/models/$@"
+	wget "https://github.com/google-coral/project-keyword-spotter/raw/master/models/$@" -P models/
 
 download: coco_labels.txt \
           ssd_mobilenet_v2_coco_quant_postprocess_edgetpu.tflite \
           imagenet_labels.txt \
           ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite \
-          mobilenet_v2_1.0_224_quant_edgetpu.tflite \
+          tf2_mobilenet_v2_1.0_224_ptq_edgetpu.tflite \
           labels_gc2.raw.txt \
           voice_commands_v0.7_edgetpu.tflite
 
 clean:
 	rm -rf __pycache__ \
-	       *.txt \
-	       *.tflite
+	       models
