@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ if __name__ == '__main__':
   if not usb_accelerator_connected():
     print('Coral USB Accelerator NOT found! :(')
     sys.exit(1)
-  
+
   print('Coral USB Accelerator found.')
   for frame in vision.get_frames():
     pass

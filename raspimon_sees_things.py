@@ -4,17 +4,9 @@ from queue import Queue
 from pycoral.utils.dataset import read_label_file
 import vision
 
-# Initialize SenseHat instance and clear the LED matrix
-sense = SenseHat()
-sense.clear()
-
-# Load the neural network model
-labels = read_label_file(vision.CLASSIFICATION_LABELS)
-classifier = vision.Classifier(vision.CLASSIFICATION_MODEL)
-
 
 def react_to_things(queue):
-  """Redraw the raspimon in response to detected things."""
+  """Write to SenseHAT in response to detected things."""
   while True:
     classes = queue.get()
     if classes:
@@ -26,15 +18,24 @@ def react_to_things(queue):
         sense.show_letter('?')
 
 
-# Create thread and queue to update the SenseHat
+# Main program ------------------------
+
+# Load the neural network model
+labels = read_label_file(vision.CLASSIFICATION_LABELS)
+classifier = vision.Classifier(vision.CLASSIFICATION_MODEL)
+
+# Initialize SenseHAT instance and clear the LEDs
+sense = SenseHat()
+sense.clear()
+
+# Create thread and queue to update the SenseHAT
 classes_queue = Queue()
 sensehat_thread = Thread(target=react_to_things,
                          args=[classes_queue],
                          daemon=True)
 sensehat_thread.start()
 
-
-# Run a loop to run the model in real-time
+# Run a loop to get images and process them in real-time
 for frame in vision.get_frames():
   # Get list of all recognized objects in the frame
   classes = classifier.get_classes(frame)
@@ -42,6 +43,5 @@ for frame in vision.get_frames():
   # Draw the label name on the video
   vision.draw_classes(frame, classes, labels)
 
-  # Pass the classification results to the raspimon
-  if classes:
-    classes_queue.put(classes)
+  # Pass the classification results to the SenseHAT
+  classes_queue.put(classes)

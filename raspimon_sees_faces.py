@@ -1,17 +1,3 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from sense_hat import SenseHat
 from time import sleep
 from math import floor
@@ -47,11 +33,12 @@ def get_fov_bboxes(image_size):
 def get_location(bbox, image_size):
   """Returns the index position of the cell where the given BBox
      currently appears. The image_size is (width, height) """
-  fov_bboxes = get_fov_bboxes(image_size)
   # Create a center-point box (a small box representing the face center)
   pbox = BBox(bbox.xmin, bbox.ymin, bbox.xmin + 1, bbox.ymin + 1)
   pbox = pbox.translate(floor(bbox.width/2), floor(bbox.height/2))
-  # Check which cell the currently intersects with the face center
+  # Get coordinates for each box in the raspimon field of view (FOV)
+  fov_bboxes = get_fov_bboxes(image_size)
+  # Check which box in FOV currently intersects with the face center
   for index, fov_box in enumerate(fov_bboxes):
     if BBox.iou(pbox, fov_box) > 0:
       return index
@@ -60,6 +47,7 @@ def get_location(bbox, image_size):
 def react_to_faces(faces):
   """Redraw the raspimon in response to detected faces."""
   if (len(faces) == 1):
+    # First get the location of the face (one of six positions)
     face_loc = get_location(faces[0].bbox, (640, 480))
     if face_loc == 0:
       sense.set_pixels(Volt.LOOK_UP_LEFT)
@@ -75,10 +63,12 @@ def react_to_faces(faces):
         sense.set_pixels(Volt.LOOK_DOWN_RIGHT)
 
 
-# load the neural network model (obfuscates use of TF and Edge TPU)
+# Main program ------------------------
+
+# Load the neural network model
 detector = vision.Detector(vision.FACE_DETECTION_MODEL)
 
-# run a loop to run the model in real-time
+# Run a loop to get images and process them in real-time
 for frame in vision.get_frames():
   faces = detector.get_objects(frame)
   # Draw bounding boxes on the frame and display it
