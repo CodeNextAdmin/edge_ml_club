@@ -2,3 +2,4 @@
 __pycache__
 *.tflite
 *.txt
+.DS_Store
