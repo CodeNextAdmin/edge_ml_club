@@ -2,7 +2,7 @@ from sense_hat import SenseHat
 from time import sleep
 from math import floor
 import vision
-from detect import BBox
+from pycoral.adapters.detect import BBox
 from bestiary import Volt
 
 FOV_COLUMNS = 3
