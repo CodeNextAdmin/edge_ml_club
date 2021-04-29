@@ -30,8 +30,8 @@ class Volt:
   LOOK_UP = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, k, w, y, y, w, k, y,
-    y, k, k, y, y, k, k, y,
+    y, w, k, y, y, k, w, y,
+    y, w, w, y, y, w, w, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -40,8 +40,8 @@ class Volt:
   LOOK_UP_RIGHT = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, k, w, y, y, k, w, y,
-    y, k, k, y, y, k, k, y,
+    y, w, k, y, y, w, k, y,
+    y, w, w, y, y, w, w, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -50,8 +50,8 @@ class Volt:
   LOOK_UP_LEFT = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, w, k, y, y, w, k, y,
-    y, k, k, y, y, k, k, y,
+    y, k, w, y, y, k, w, y,
+    y, w, w, y, y, w, w, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -60,8 +60,8 @@ class Volt:
   LOOK_DOWN = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, k, k, y, y, k, k, y,
-    y, k, w, y, y, w, k, y,
+    y, w, w, y, y, w, w, y,
+    y, w, k, y, y, k, w, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -70,8 +70,8 @@ class Volt:
   LOOK_DOWN_RIGHT = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, k, k, y, y, k, k, y,
-    y, k, w, y, y, k, w, y,
+    y, w, w, y, y, w, w, y,
+    y, w, k, y, y, w, k, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -80,8 +80,8 @@ class Volt:
   LOOK_DOWN_LEFT = [
     o, y, y, y, y, y, y, o,
     o, o, n, y, y, n, o, o,
-    y, k, k, y, y, k, k, y,
-    y, w, k, y, y, w, k, y,
+    y, w, w, y, y, w, w, y,
+    y, k, w, y, y, k, w, y,
     y, y, y, k, k, y, y, y,
     n, n, n, y, y, n, n, n,
     n, n, n, y, y, n, n, n,
@@ -111,3 +111,4 @@ class Chirp:
     k, k, k, l, l, k, k, k,
     k, k, o, k, k, o, k, k
   ]
+
