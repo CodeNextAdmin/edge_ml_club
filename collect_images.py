@@ -71,8 +71,12 @@ def save_frame(request):
 
 def main():
   parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument('--labels', '-l', type=str, default=None, help='Labels file')
-  parser.add_argument('--output_dir', '-d', type=str, default='capture', help='Output director')
+  parser.add_argument('--labels', '-l', type=str, default=None,
+                      help='Labels file')
+  parser.add_argument('--capture_dir', '-d', type=str, default='capture',
+                      help='Capture directory')
+  parser.add_argument('--capture_device_index', '-i', type=int, default=0,
+                      help='Capture device index')
   args = parser.parse_args()
 
   print("Press buttons '0' .. '9' to save images from the camera.")
@@ -92,11 +96,12 @@ def main():
         label_id = key - ord('0')
         class_dir = labels.get(label_id, str(label_id))
         name = str(round(time.time() * 1000)) + '.png'
-        filename = os.path.join(args.output_dir, class_dir, name)
+        filename = os.path.join(args.capture_dir, class_dir, name)
         submit((filename, frame.copy()))
       return True  # Keep processing frames.
 
-    for frame in vision.get_frames(handle_key=handle_key):
+    for frame in vision.get_frames(handle_key=handle_key,
+                                   capture_device_index=args.capture_device_index):
       # Handle key events from console.
       ch = get_char()
       if ch is not None and not handle_key(ord(ch), frame):

@@ -143,7 +143,8 @@ def draw_classes(frame, classes, labels, color=CORAL_COLOR):
     label = '%s (%.2f)' % (labels.get(index, 'n/a'), score)
     cv2.putText(frame, label, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2.0, color, 2)
 
-def get_frames(title='Raspimon camera', size=(640, 480), handle_key=None):
+def get_frames(title='Raspimon camera', size=(640, 480), handle_key=None,
+               capture_device_index=0):
   """
   Gets a stream of image frames from the default camera.
 
@@ -165,7 +166,7 @@ def get_frames(title='Raspimon camera', size=(640, 480), handle_key=None):
 
   attempts = 5
   while True:
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(capture_device_index)
     success, _ = cap.read()
     if success:
       print("Camera started successfully.")
