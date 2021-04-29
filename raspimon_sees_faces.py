@@ -5,6 +5,7 @@ import vision
 from pycoral.adapters.detect import BBox
 from bestiary import Volt
 
+# Set the number of "field of view" squares
 FOV_COLUMNS = 3
 FOV_ROWS = 2
 
@@ -30,25 +31,11 @@ def get_fov_bboxes(image_size):
   return bboxes
 
 
-def get_location(bbox, image_size):
-  """Returns the index position of the cell where the given BBox
-     currently appears. The image_size is (width, height) """
-  # Create a center-point box (a small box representing the face center)
-  pbox = BBox(bbox.xmin, bbox.ymin, bbox.xmin + 1, bbox.ymin + 1)
-  pbox = pbox.translate(floor(bbox.width/2), floor(bbox.height/2))
-  # Get coordinates for each box in the raspimon field of view (FOV)
-  fov_bboxes = get_fov_bboxes(image_size)
-  # Check which box in FOV currently intersects with the face center
-  for index, fov_box in enumerate(fov_bboxes):
-    if BBox.iou(pbox, fov_box) > 0:
-      return index
-
-
 def react_to_faces(faces):
-  """Redraw the raspimon in response to detected faces."""
+  """Redraw the raspimon in response to the face location in FOV squares."""
   if (len(faces) == 1):
     # First get the location of the face (one of six positions)
-    face_loc = get_location(faces[0].bbox, (640, 480))
+    face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
     if face_loc == 0:
       sense.set_pixels(Volt.LOOK_UP_LEFT)
     elif face_loc == 1:
@@ -63,6 +50,40 @@ def react_to_faces(faces):
         sense.set_pixels(Volt.LOOK_DOWN_RIGHT)
 
 
+def get_location(bbox, image_size):
+  """Returns the index position of the cell where the given BBox
+     currently appears. The image_size is (width, height) """
+
+  # Get the center point for the face bounding-box
+  face_x, face_y = get_center_point(bbox)
+
+  # Get coordinates for each box in the raspimon field of view (FOV)
+  fov_bboxes = get_fov_bboxes(image_size)
+
+  # Find which FOV box currently holds the center point
+  for index, fov_bbox in enumerate(fov_bboxes):
+    if is_point_in_box(face_x, face_y, fov_bbox):
+      return index
+
+
+def is_point_in_box(x, y, bbox):
+    """Check if the given (x,y) point lies within the given box."""
+    if (x > bbox.xmin and x < bbox.xmax) and (y > bbox.ymin and y < bbox.ymax):
+        return True
+    return False
+
+
+def get_center_point(bbox):
+    """Return the center point for the given box, as (x,y) position"""
+    width = bbox.xmax - bbox.xmin
+    height = bbox.ymax - bbox.ymin
+
+    half_width = floor(width / 2)
+    half_height = floor(height / 2)
+
+    return (bbox.xmin + half_width, bbox.ymin + half_height)
+
+
 # Main program ------------------------
 
 # Load the neural network model
@@ -71,6 +92,13 @@ detector = vision.Detector(vision.FACE_DETECTION_MODEL)
 # Run a loop to get images and process them in real-time
 for frame in vision.get_frames():
   faces = detector.get_objects(frame)
+  # Experiment code:
+  if faces:
+      bbox = faces[0].bbox
+      print("xmin: ", bbox.xmin)
+      x, y = get_center_point(bbox)
+      print("center: ", x, y)
+      vision.draw_circle(frame, (x,y), 10)
   # Draw bounding boxes on the frame and display it
   vision.draw_objects(frame, faces)
   # Pass faces to function that controls raspimon

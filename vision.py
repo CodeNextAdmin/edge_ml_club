@@ -36,6 +36,7 @@ OBJECT_DETECTION_LABELS = 'models/coco_labels.txt'
 CLASSIFICATION_MODEL = 'models/tf2_mobilenet_v2_1.0_224_ptq_edgetpu.tflite'
 CLASSIFICATION_LABELS = 'models/imagenet_labels.txt'
 
+VIDEO_SIZE = (640, 480)
 CORAL_COLOR = (86, 104, 237)
 
 def make_interpreter(model_file):
@@ -129,6 +130,10 @@ def draw_objects(frame, objs, labels=None, color=CORAL_COLOR, thickness=5):
       cv2.putText(frame, labels.get(obj.id), (bbox.xmin + thickness, bbox.ymax - thickness),
                   fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=CORAL_COLOR, thickness=2)
 
+def draw_circle(frame, point, radius, color=CORAL_COLOR, thickness=5):
+  """Draws a circle onto the frame."""
+  cv2.circle(frame, point, radius, color, thickness)
+
 def draw_classes(frame, classes, labels, color=CORAL_COLOR):
   """
   Draws the image classification name on the display output.
@@ -143,7 +148,7 @@ def draw_classes(frame, classes, labels, color=CORAL_COLOR):
     label = '%s (%.2f)' % (labels.get(index, 'n/a'), score)
     cv2.putText(frame, label, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2.0, color, 2)
 
-def get_frames(title='Raspimon camera', size=(640, 480), handle_key=None,
+def get_frames(title='Raspimon camera', size=VIDEO_SIZE, handle_key=None,
                capture_device_index=0):
   """
   Gets a stream of image frames from the default camera.
@@ -205,3 +210,4 @@ def save_frame(filename, frame):
   """
   os.makedirs(os.path.dirname(filename), exist_ok=True)
   cv2.imwrite(filename, frame)
+
