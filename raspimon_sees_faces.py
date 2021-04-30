@@ -1,17 +1,26 @@
 from sense_hat import SenseHat
-from time import sleep
 import vision
 from pycoral.adapters.detect import BBox
 from bestiary import Volt
 
-# Set the number of "field of view" squares
+### Set the number of squares for the "field of view" (FOV)
 FOV_COLUMNS = 3
 FOV_ROWS = 2
 
+# Set the available poses; length must match the total FOV squares
+VOLT_POSES = [
+  Volt.LOOK_UP_LEFT,
+  Volt.LOOK_UP,
+  Volt.LOOK_UP_RIGHT,
+  Volt.LOOK_DOWN_LEFT,
+  Volt.LOOK_DOWN,
+  Volt.LOOK_DOWN_RIGHT
+]
 
 def get_fov_bboxes(image_size):
   """Returns a list of BBox objects representing each cell in the
-     raspimon's field of view (FOV)."""
+     Raspimon's field of view (FOV). These are in sequence from
+     left-to-right and top-to-bottom (top-left is first)."""
   cell_width = image_size[0] / FOV_COLUMNS
   cell_height = image_size[1] / FOV_ROWS
   bboxes = []
@@ -29,20 +38,10 @@ def get_fov_bboxes(image_size):
 def react_to_faces(faces):
   """Redraw the raspimon in response to the face location in FOV squares."""
   if (len(faces) == 1):
-    # First get the location of the face (one of six positions)
+    # Get the location of the face (one of six positions)
     face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
-    if face_loc == 0:
-      sense.set_pixels(Volt.LOOK_UP_LEFT)
-    elif face_loc == 1:
-        sense.set_pixels(Volt.LOOK_UP)
-    elif face_loc == 2:
-        sense.set_pixels(Volt.LOOK_UP_RIGHT)
-    elif face_loc == 3:
-        sense.set_pixels(Volt.LOOK_DOWN_LEFT)
-    elif face_loc == 4:
-        sense.set_pixels(Volt.LOOK_DOWN)
-    elif face_loc == 5:
-        sense.set_pixels(Volt.LOOK_DOWN_RIGHT)
+    # Set the Raspimon pose
+    sense.set_pixels(VOLT_POSES[face_loc])
 
 
 def get_location(bbox, image_size):
@@ -62,14 +61,30 @@ def get_location(bbox, image_size):
 
 
 def is_point_in_box(x, y, bbox):
-    """Check if the given (x,y) point lies within the given box."""
+    """
+    Check if the given (x,y) point lies within the given box.
+
+    Args:
+      x (int): The X-coordinate for the point
+      y (int): The Y-coordinate for the point
+      bbox (BBox): A `BBox` (bounding box) object
+    Returns:
+      True if the point is inside the bounding box; False otherwise
+    """
     if (x > bbox.xmin and x < bbox.xmax) and (y > bbox.ymin and y < bbox.ymax):
         return True
     return False
 
 
 def get_center_point(bbox):
-    """Return the center point for the given box, as (x,y) position"""
+    """
+    Return the center point for the given box, as (x,y) position.
+
+    Args:
+      bbox (BBox): A `BBox` (bounding box) object
+    Returns:
+      A tuple as (x,y), representing the center of the box
+    """
     width = bbox.xmax - bbox.xmin
     height = bbox.ymax - bbox.ymin
 
