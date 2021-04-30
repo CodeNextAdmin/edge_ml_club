@@ -1,6 +1,5 @@
 from sense_hat import SenseHat
 from time import sleep
-from math import floor
 import vision
 from pycoral.adapters.detect import BBox
 from bestiary import Volt
@@ -8,10 +7,6 @@ from bestiary import Volt
 # Set the number of "field of view" squares
 FOV_COLUMNS = 3
 FOV_ROWS = 2
-
-# initialize SenseHat instance and clear the LED matrix
-sense = SenseHat()
-sense.set_pixels(Volt.LOOK_UP)
 
 
 def get_fov_bboxes(image_size):
@@ -78,13 +73,20 @@ def get_center_point(bbox):
     width = bbox.xmax - bbox.xmin
     height = bbox.ymax - bbox.ymin
 
-    half_width = floor(width / 2)
-    half_height = floor(height / 2)
+    half_width = int(width / 2)
+    half_height = int(height / 2)
 
-    return (bbox.xmin + half_width, bbox.ymin + half_height)
+    x_middle = bbox.xmin + half_width
+    y_middle = bbox.ymin + half_height
+
+    return (x_middle, y_middle)
 
 
 # Main program ------------------------
+
+# initialize SenseHat instance and set raspimon
+sense = SenseHat()
+sense.set_pixels(Volt.LOOK_UP)
 
 # Load the neural network model
 detector = vision.Detector(vision.FACE_DETECTION_MODEL)
@@ -92,6 +94,8 @@ detector = vision.Detector(vision.FACE_DETECTION_MODEL)
 # Run a loop to get images and process them in real-time
 for frame in vision.get_frames():
   faces = detector.get_objects(frame)
+  # Draw bounding boxes on the frame and display it
+  vision.draw_objects(frame, faces)
   # Experiment code:
   if faces:
       bbox = faces[0].bbox
@@ -99,7 +103,5 @@ for frame in vision.get_frames():
       x, y = get_center_point(bbox)
       print("center: ", x, y)
       vision.draw_circle(frame, (x,y), 10)
-  # Draw bounding boxes on the frame and display it
-  vision.draw_objects(frame, faces)
   # Pass faces to function that controls raspimon
   react_to_faces(faces)
