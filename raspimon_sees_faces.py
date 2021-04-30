@@ -1,7 +1,19 @@
 from sense_hat import SenseHat
 import vision
+from time import sleep
 from pycoral.adapters.detect import BBox
 from bestiary import Volt
+
+#   The video image is divided into
+#   numbered squares like this:
+#
+#   -------------------
+#   |     |     |     |
+#   |  0  |  1  |  2  |
+#   -------------------
+#   |     |     |     |
+#   |  3  |  4  |  5  |
+#   -------------------
 
 ### Set the number of squares for the "field of view" (FOV)
 FOV_COLUMNS =
@@ -41,7 +53,8 @@ def react_to_faces(faces):
     # Get the location of the face (one of six positions)
     face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
     # Set the Raspimon pose
-    sense.set_pixels(VOLT_POSES[face_loc])
+    if face_loc is not None:
+        sense.set_pixels(VOLT_POSES[face_loc])
 
 
 def get_location(bbox, image_size):
@@ -58,6 +71,7 @@ def get_location(bbox, image_size):
   for index, fov_bbox in enumerate(fov_bboxes):
     if is_point_in_box(face_x, face_y, fov_bbox):
       return index
+  return None
 
 ### FIX IN THIS FUNCTION
 def is_point_in_box(x, y, bbox):
@@ -90,12 +104,16 @@ def get_center_point(bbox):
 
     return (x_middle, y_middle)
 
+### CREATE A LOOP TO SHOW ALL RASPIMON POSES
+def roll_eyes():
+
 
 ### FINISH THIS CODE ------------------------
 
 # initialize SenseHat instance and set raspimon
 sense = SenseHat()
 sense.set_pixels(Volt.LOOK_UP)
+#sense.set_rotation(270)
 
 # Load the neural network model
 
