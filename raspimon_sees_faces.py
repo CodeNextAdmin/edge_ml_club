@@ -30,9 +30,17 @@ VOLT_POSES = [
 ]
 
 def get_fov_bboxes(image_size):
-  """Returns a list of BBox objects representing each cell in the
-     Raspimon's field of view (FOV). These are in sequence from
-     left-to-right and top-to-bottom (top-left is first)."""
+  """
+  Gets a list of bounding-boxes, representing each cell in the FOV.
+
+  Args:
+    image_size (x,y): A tuple with the image height and width
+  Returns:
+    A list of `BBox` objects representing each cell in the
+    Raspimon's field of view (FOV). These are in sequence from
+    left-to-right and top-to-bottom (top-left is first).
+    See https://coral.ai/docs/reference/py/pycoral.adapters/#pycoral.adapters.detect.BBox
+  """
   cell_width = image_size[0] / FOV_COLUMNS
   cell_height = image_size[1] / FOV_ROWS
   bboxes = []
@@ -48,7 +56,13 @@ def get_fov_bboxes(image_size):
 
 
 def react_to_faces(faces):
-  """Redraw the raspimon in response to the face location in FOV squares."""
+  """
+  Redraw the Raspimon in response to the face location.
+
+  Args:
+    faces: A list of `Object` objects, representing detected faces.
+    See https://coral.ai/docs/reference/py/pycoral.adapters/#pycoral.adapters.detect.Object
+  """
   if (len(faces) == 1):
     # Get the location of the face (one of six positions)
     face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
@@ -58,8 +72,17 @@ def react_to_faces(faces):
 
 
 def get_location(bbox, image_size):
-  """Returns the index position of the cell where the given BBox
-     currently appears. The image_size is (width, height) """
+  """
+  Get the FOV cell where the given BBox currently appears.
+
+  Args:
+    bbox: The `BBox` you want to locate
+    image_size (x,y): A tuple with the image height and width
+  Returns:
+    The FOV cell that contains the BBox (based on the BBox center point); this is
+    the cell's index position, from left-to-right and top-to-bottom in the image
+    (top-left is position 0).
+  """
 
   # Get the center point for the face bounding-box
   face_x, face_y = get_center_point(bbox)
@@ -119,8 +142,8 @@ sense.set_pixels(Volt.LOOK_UP)
 
 # Run a loop to get images and process them in real-time
 
-  # Draw bounding boxes on the frame and display it
+    # Draw bounding boxes on the frame and display it
 
-  # Experiment code:
+    # Experiment code:
 
-  # Pass faces to function that controls raspimon
+    # Pass faces to function that controls raspimon
