@@ -55,22 +55,6 @@ def get_fov_bboxes(image_size):
   return bboxes
 
 
-def react_to_faces(faces):
-  """
-  Redraw the Raspimon in response to the face location.
-
-  Args:
-    faces: A list of `Object` objects, representing detected faces.
-    See https://coral.ai/docs/reference/py/pycoral.adapters/#pycoral.adapters.detect.Object
-  """
-  if (len(faces) == 1):
-    # Get the location of the face (one of six positions)
-    face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
-    # Set the Raspimon pose
-    if face_loc is not None:
-        sense.set_pixels(VOLT_POSES[face_loc])
-
-
 def get_location(bbox, image_size):
   """
   Get the FOV cell where the given BBox currently appears.
@@ -96,6 +80,28 @@ def get_location(bbox, image_size):
       return index
   return None
 
+
+def react_to_faces(faces):
+  """
+  Redraw the Raspimon in response to the face location.
+
+  Args:
+    faces: A list of `Object` objects, representing detected faces.
+    See https://coral.ai/docs/reference/py/pycoral.adapters/#pycoral.adapters.detect.Object
+  """
+  if (len(faces) == 1):
+    # Get the location of the face (one of six positions)
+    face_loc = get_location(faces[0].bbox, vision.VIDEO_SIZE)
+    # Set the Raspimon pose
+    if face_loc is not None:
+        sense.set_pixels(VOLT_POSES[face_loc])
+
+
+### CREATE A LOOP TO SHOW ALL RASPIMON POSES
+def roll_eyes():
+    print("roll eyes")
+
+
 ### FIX IN THIS FUNCTION
 def is_point_in_box(x, y, bbox):
     """
@@ -108,9 +114,10 @@ def is_point_in_box(x, y, bbox):
     Returns:
       True if the point is inside the bounding box; False otherwise
     """
-    if x > 0 and y > 0:
+    if x < 200 and y < 200:
         return True
     return False
+
 
 ### FIX IN THIS FUNCTION
 def get_center_point(bbox):
@@ -125,10 +132,8 @@ def get_center_point(bbox):
     x_middle = 42
     y_middle = 42
 
+    # HINT: bbox.xmin, bbox,xmax, bbox.ymin, bbox.ymax
     return (x_middle, y_middle)
-
-### CREATE A LOOP TO SHOW ALL RASPIMON POSES
-def roll_eyes():
 
 
 ### FINISH THIS CODE ------------------------
@@ -145,5 +150,6 @@ sense.set_pixels(Volt.LOOK_UP)
     # Draw bounding boxes on the frame and display it
 
     # Experiment code:
+
 
     # Pass faces to function that controls raspimon
