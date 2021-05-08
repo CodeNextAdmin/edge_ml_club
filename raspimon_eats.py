@@ -130,7 +130,6 @@ while True:
   move()
   sleep(DELAY)
 
-  print(berries)
   if len(berries) == 0:
     break
 
