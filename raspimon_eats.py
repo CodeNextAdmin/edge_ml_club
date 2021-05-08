@@ -97,10 +97,10 @@ def generate_berries():
   while len(berries) < 5:
     x = randint(0, 7)
     y = randint(0, 7)
-    if (x,y) in berries or [x,y] == raspimon:
+    if [x,y] in berries or [x,y] == raspimon:
       continue
     sense.set_pixel(x, y, RED)
-    berries.append((x,y))
+    berries.append([x,y])
 
 
 # Main program ------------------------
@@ -130,7 +130,9 @@ while True:
   move()
   sleep(DELAY)
 
+  print(berries)
   if len(berries) == 0:
     break
 
 sense.clear()
+
