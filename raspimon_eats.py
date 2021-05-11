@@ -20,7 +20,7 @@ berries = []
 direction = D_RIGHT
 
 
-def move():
+def move_and_draw():
   """Performs all LED updates in each game cycle, including eating berries."""
 
   global raspimon, pause
@@ -65,33 +65,6 @@ def move():
   raspimon = next
 
 
-def joystick_moved(event):
-  """
-  Update the Raspimon's direction based on callback from joystick events.
-  Args:
-    event: An `InputEvent` from SenseHat.stick
-  """
-  global direction
-  direction = event.direction
-
-
-def change_direction(label):
-  """
-  Change the Raspimon's direction based on voice command.
-  Args:
-    label (str): The recognized voice command label
-  """
-  global direction
-  if label.endswith("up"):
-    direction = D_UP
-  elif label.endswith("down"):
-    direction = D_DOWN
-  elif label.endswith("left"):
-    direction = D_LEFT
-  elif label.endswith("right"):
-    direction = D_RIGHT
-
-
 def generate_berries():
   """Draw a new berry at a random location."""
   while len(berries) < 5:
@@ -103,35 +76,70 @@ def generate_berries():
     berries.append([x,y])
 
 
+def respond_to_joystick(event):
+  """
+  Update the Raspimon's direction based on a callback from joystick events.
+  Args:
+    event: An `InputEvent` from SenseHat.stick
+  """
+  global direction
+  if event.direction == D_UP:
+      direction = D_UP
+  elif event.direction == D_DOWN:
+    direction = D_DOWN
+  elif event.direction == D_LEFT:
+    direction = D_LEFT
+  elif event.direction == D_RIGHT:
+    direction = D_RIGHT
+
+
+def respond_to_voice(command):
+  """
+  Update the Raspimon's direction based on a voice command.
+  Args:
+    command: A voice command, as given by AudioClassifier.next()
+  """
+  global direction
+
+  label, score = command
+  if label.endswith("up"):
+    direction = D_UP
+  elif label.endswith("down"):
+    direction = D_DOWN
+  elif label.endswith("left"):
+    direction = D_LEFT
+  elif label.endswith("right"):
+    direction = D_RIGHT
+
+
 # Main program ------------------------
 
 sense = SenseHat()
 sense.clear()
+
+# Add berries to the screen
+generate_berries()
+
 # Set callback for joystick events
-sense.stick.direction_any = joystick_moved
+sense.stick.direction_any = respond_to_joystick
 
 ### Add listener for speech detection model
 listener = voice.AudioClassifier(model_file=voice.VOICE_MODEL,
                                  labels_file=voice.VOICE_LABELS,
                                  audio_device_index=2)
 
-# Add berries to screen
-generate_berries()
-
 # Main game loop
 while True:
   ### Respond to speech detection results
   command = listener.next(block=False)
   if command:
-    label, score = command
-    print(label, score)
-    change_direction(label)
+    print(command)
+    respond_to_voice(command)
 
-  move()
+  move_and_draw()
   sleep(DELAY)
 
   if len(berries) == 0:
     break
 
 sense.clear()
-
