@@ -193,19 +193,21 @@ def get_frames(title='Raspimon camera', size=VIDEO_SIZE, handle_key=None,
 
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-  while True:
-    success, frame = cap.read()
-    frame = cv2.flip(frame, 1)
-    if success:
-      yield frame
-      cv2.imshow(title, frame)
 
-    key = cv2.waitKey(1)
-    if key != -1 and not handle_key(key, frame):
-      break
+  try:
+    while True:
+      success, frame = cap.read()
+      frame = cv2.flip(frame, 1)
+      if success:
+        yield frame
+        cv2.imshow(title, frame)
 
-  cap.release()
-  cv2.destroyAllWindows()
+      key = cv2.waitKey(1)
+      if key != -1 and not handle_key(key, frame):
+        break
+  finally:
+    cap.release()
+    cv2.destroyAllWindows()
 
 def save_frame(filename, frame):
   """

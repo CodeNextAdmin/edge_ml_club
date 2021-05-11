@@ -14,8 +14,9 @@
 
 import subprocess
 import sys
-
+import time
 import vision
+
 
 def usb_accelerator_connected():
   if subprocess.run(["lsusb", "-d", "18d1:9302"], capture_output=True).returncode == 0:
@@ -25,10 +26,31 @@ def usb_accelerator_connected():
   return False
 
 if __name__ == '__main__':
+
+  print('--- Testing camera ---')
+
+  TIME_LIMIT = 7
+  start = time.time()
+  for frame in vision.get_frames():
+    elapsed = int(time.time() - start)
+    print('Closing video in...', TIME_LIMIT - elapsed, end='\r')
+    if (elapsed >= TIME_LIMIT):
+      print('\nCamera test done.\n')
+      break
+    pass
+
+  print('--- Testing USB Accelerator ---')
+
   if not usb_accelerator_connected():
     print('Coral USB Accelerator NOT found! :(')
     sys.exit(1)
-
   print('Coral USB Accelerator found.')
-  for frame in vision.get_frames():
-    pass
+
+  print('Loading a model...')
+  classifier = vision.Classifier(vision.CLASSIFICATION_MODEL)
+  classes = classifier.get_classes(frame)
+  if classes:
+    print('Done.')
+
+  print('\nAll tests complete.')
+
