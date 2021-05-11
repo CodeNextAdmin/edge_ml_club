@@ -232,6 +232,15 @@ def classify_audio(model_file, labels_file, callback,
         prev_detection = detection
 
 class AudioClassifier:
+  """Performs classifications with a speech detection model.
+
+  Args:
+    model_file: Path to a `.tflite` speech classification model (compiled for the Edge TPU).\
+    labels_file: Path to the corresponding labels file for the model.
+    audio_device_index: Specify the device card for your mic. Defaults to 0.
+      You can check from the command line with `arecord -l`. On Raspberry Pi, your mic must be via
+      USB or a sound card HAT, because the Pi's headphone jack does not support mic input.
+  """
   def __init__(self, model_file, labels_file, audio_device_index=0):
     self._thread = threading.Thread(target=classify_audio,
       args=(model_file, labels_file, self._callback, audio_device_index), daemon=True)
@@ -243,6 +252,17 @@ class AudioClassifier:
     return True
 
   def next(self, block=True):
+    """
+    Returns a speech classification.
+
+    Each time you call this, it pulls from a queue of recent classifications. So even if there are
+    many classifications in a short period of time, this always returns them in the order received.
+
+    Args:
+      block (boolean): Whether this function should block until the next classification arrives (if
+        there are no queued classification). If False, it always returns immediately and returns
+        None if the classification queue is empty.
+    """
     try:
       result = self._queue.get(block)
       self._queue.task_done()
