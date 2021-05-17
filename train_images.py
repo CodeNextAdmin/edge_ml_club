@@ -68,7 +68,7 @@ def main():
                       help='Capture directory')
   parser.add_argument('--model', '-m', type=str, required=True,
                       help='Base model')
-  parser.add_argument('--out_model', '-om', type=str, default='model.tflite',
+  parser.add_argument('--out_model', '-om', type=str, default='my-model.tflite',
                       help='Output model')
   args = parser.parse_args()
 
