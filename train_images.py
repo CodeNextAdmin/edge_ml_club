@@ -13,13 +13,14 @@
 # limitations under the License.
 
 """
-By default all captured images are saved to 'capture' directory.
-
 Capture images:
-  python3 collect_images.py -l labels.txt
+  python3 collect_images.py -l my-labels.txt
 
-Train new model using captured images:
-  python3 train_images.py -l labels.txt -m models/mobilenet_v1_1.0_224_l2norm_quant_edgetpu.tflite
+Train new model using captured images (THIS SCRIPT):
+  python3 train_images.py -l my-labels.txt
+
+Run the model:
+  python3 classify_image.py -m my-model.tflite -l my-labels.txt
 """
 
 import argparse
@@ -33,6 +34,8 @@ from pycoral.learn.imprinting.engine import ImprintingEngine
 from pycoral.utils.edgetpu import make_interpreter
 
 from pycoral.utils.dataset import read_label_file
+
+DEFAULT_BASE_MODEL = 'models/mobilenet_v1_1.0_224_l2norm_quant_edgetpu.tflite'
 
 def read_image(path, shape):
   with Image.open(path) as img:
@@ -66,7 +69,7 @@ def main():
                       help='Labels file')
   parser.add_argument('--capture_dir', '-d', type=str, default='capture',
                       help='Capture directory')
-  parser.add_argument('--model', '-m', type=str, required=True,
+  parser.add_argument('--model', '-m', type=str, default=DEFAULT_BASE_MODEL,
                       help='Base model')
   parser.add_argument('--out_model', '-om', type=str, default='my-model.tflite',
                       help='Output model')
@@ -77,3 +80,4 @@ def main():
 
 if __name__ == '__main__':
   main()
+

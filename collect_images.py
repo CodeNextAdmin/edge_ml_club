@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Capture images (THIS SCRIPT):
+  python3 collect_images.py -l my-labels.txt
+
+Train new model using captured images:
+  python3 train_images.py -l my-labels.txt
+
+Run the model:
+  python3 classify_image.py -m my-model.tflite -l my-labels.txt
+"""
+
 import argparse
 import contextlib
 import queue
