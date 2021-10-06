@@ -1,7 +1,7 @@
 # Edge ML Club materials
 
 This repository provides several Python modules that are required
-for the Edge ML Club projects, including starter script files for those projects.
+for Google's Code Next -  Edge ML Club projects, including starter script files for those projects.
 
 ## Get started
 
